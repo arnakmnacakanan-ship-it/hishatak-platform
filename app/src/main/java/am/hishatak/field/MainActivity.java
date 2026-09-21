@@ -32,7 +32,7 @@ public class MainActivity extends Activity {
   WebSettings s=web.getSettings();
   s.setJavaScriptEnabled(true); s.setDomStorageEnabled(true); s.setDatabaseEnabled(true);
   s.setGeolocationEnabled(true); s.setMediaPlaybackRequiresUserGesture(false);
-  web.setWebViewClient(new WebViewClient());
+  web.setWebViewClient(new WebViewClient(){ @Override public boolean shouldOverrideUrlLoading(WebView v,String url){ return false; } });
   web.setWebChromeClient(new WebChromeClient(){
    @Override public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback cb){
     if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED ||
@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
     return true;
    }
   });
-  web.loadUrl("https://hishatak-field-pwa-production.up.railway.app");
+  web.loadUrl("file:///android_asset/index.html");
  }
 
  @Override public void onRequestPermissionsResult(int req,String[] perms,int[] results){
