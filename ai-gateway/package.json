@@ -1,0 +1,10 @@
+{
+  "name": "hishatak-ai-gateway",
+  "type": "module",
+  "scripts": {
+    "start": "bun run index.ts"
+  },
+  "dependencies": {
+    "hono": "^4.9.0"
+  }
+}
