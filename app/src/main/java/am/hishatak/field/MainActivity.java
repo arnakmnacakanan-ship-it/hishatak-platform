@@ -61,10 +61,17 @@ public class MainActivity extends Activity {
         cameraUri=FileProvider.getUriForFile(MainActivity.this,getPackageName()+".fileprovider",photo);
         camera.putExtra(MediaStore.EXTRA_OUTPUT,cameraUri);
         camera.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        Intent chooserIntent=new Intent(Intent.ACTION_CHOOSER);
-        chooserIntent.putExtra(Intent.EXTRA_INTENT,select);
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS,new Intent[]{camera});
-        startActivityForResult(chooserIntent,FILE_REQ);
+        // The web page has separate "Camera" and "Gallery" buttons.
+        // For capture requests, launch the camera directly instead of Android's app chooser.
+        boolean captureEnabled = p.isCaptureEnabled();
+        if (captureEnabled) {
+          startActivityForResult(camera,FILE_REQ);
+        } else {
+          Intent chooserIntent=new Intent(Intent.ACTION_CHOOSER);
+          chooserIntent.putExtra(Intent.EXTRA_INTENT,select);
+          chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS,new Intent[]{camera});
+          startActivityForResult(chooserIntent,FILE_REQ);
+        }
       }catch(IOException e){ startActivityForResult(select,FILE_REQ); }
     } else startActivityForResult(select,FILE_REQ);
     return true;
