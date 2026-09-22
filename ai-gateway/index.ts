@@ -4,7 +4,7 @@ import { cors } from 'hono/cors';
 const app=new Hono();
 app.use('/api/*',cors({origin:'*',allowMethods:['GET','POST','OPTIONS'],allowHeaders:['Content-Type']}));
 app.get('/',c=>c.json({service:'Hishatak AI Gateway',ok:true,version:'0.1.8-ai'}));
-app.get('/api/ai/health',c=>c.json({ok:true,aiConfigured:!!process.env.OPENAI_API_KEY,model:'gpt-5.6-luna',version:'0.1.8-ai'}));
+app.get('/api/ai/health',c=>c.json({ok:true,aiConfigured:!!process.env.OPENAI_API_KEY,model:'gpt-5.6-sol',version:'0.1.8-ai'}));
 
 app.post('/api/ai/recognize',async c=>{
  try{
@@ -13,8 +13,8 @@ app.post('/api/ai/recognize',async c=>{
   if(typeof image!=='string'||!/^data:image\/(jpeg|png|webp);base64,/i.test(image))return c.json({error:'INVALID_IMAGE'},400);
   if(image.length>14_000_000)return c.json({error:'IMAGE_TOO_LARGE'},413);
 
-  const prompt='Read this gravestone faithfully. Russian, Armenian and English are possible. It may contain one person or a family. Never guess unreadable letters or names; use null for uncertain structured fields. Dates must be DD.MM.YYYY only when clearly readable. Return ONLY valid JSON, no markdown: {"language":"ru|hy|en|mixed|unknown","monumentType":"single|family|unknown","rawText":"...","people":[{"lastName":null,"firstName":null,"patronymic":null,"birthDate":null,"deathDate":null,"confidence":0,"rawText":"..."}]}';
-  const body={model:'gpt-5.6-luna',store:false,input:[{role:'user',content:[{type:'input_text',text:prompt},{type:'input_image',image_url:image}]}]};
+  const prompt='Act as a forensic gravestone transcription specialist. Read the ACTUAL inscription from the image, not an OCR guess. Russian, Armenian and English are possible. Zoom/inspect letter shapes, distinguish Cyrillic lookalikes, and verify every digit against the image. First transcribe line by line exactly as visible. Then extract people. A family monument may contain multiple people: return every clearly identifiable person separately. Never normalize a surname to a more common spelling and never invent missing letters. For dates, preserve the inscription format and convert to DD.MM.YYYY only when day/month/year are all clear; otherwise null. Cross-check that structured names and dates exactly agree with rawText. Return ONLY valid JSON, no markdown: {"language":"ru|hy|en|mixed|unknown","monumentType":"single|family|unknown","rawText":"...","people":[{"lastName":null,"firstName":null,"patronymic":null,"birthDate":null,"deathDate":null,"confidence":0,"rawText":"..."}]}';
+  const body={model:'gpt-5.6-sol',store:false,input:[{role:'user',content:[{type:'input_text',text:prompt},{type:'input_image',image_url:image}]}]};
   const r=await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:'Bearer '+process.env.OPENAI_API_KEY,'Content-Type':'application/json'},body:JSON.stringify(body)});
   const d=await r.json();
   if(!r.ok){
