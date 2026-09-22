@@ -26,14 +26,17 @@ jobs:
           HISHATAK_KEY_ALIAS: ${{ secrets.HISHATAK_KEY_ALIAS }}
           HISHATAK_KEY_PASSWORD: ${{ secrets.HISHATAK_KEY_PASSWORD }}
           HISHATAK_STORE_PASSWORD: ${{ secrets.HISHATAK_STORE_PASSWORD }}
+          HISHATAK_KEYSTORE_PATH: ${{ github.workspace }}/hishatak-release.jks
         run: |
           if [ -n "$HISHATAK_KEYSTORE_B64" ]; then
             echo "$HISHATAK_KEYSTORE_B64" | base64 -d > hishatak-release.jks
             gradle assembleRelease --stacktrace
+            $ANDROID_HOME/build-tools/35.0.0/apksigner verify --print-certs app/build/outputs/apk/release/app-release.apk
             cp app/build/outputs/apk/release/app-release.apk Hishatak-update.apk
           else
-            echo "Release signing secrets are not configured; building debug APK with the stable repository debug key."
+            echo "Release signing secrets are not configured; building debug APK. In-place updates are not guaranteed until signing secrets are configured."
             gradle assembleDebug --stacktrace
+            $ANDROID_HOME/build-tools/35.0.0/apksigner verify --print-certs app/build/outputs/apk/debug/app-debug.apk
             cp app/build/outputs/apk/debug/app-debug.apk Hishatak-update.apk
           fi
       - uses: actions/upload-artifact@v4
