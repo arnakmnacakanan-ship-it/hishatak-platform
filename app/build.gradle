@@ -9,5 +9,21 @@ android {
    versionCode 14
    versionName '0.2.3'
  }
+ signingConfigs {
+   release {
+     if (System.getenv('HISHATAK_KEYSTORE_PATH')) {
+       storeFile file(System.getenv('HISHATAK_KEYSTORE_PATH'))
+       storePassword System.getenv('HISHATAK_STORE_PASSWORD')
+       keyAlias System.getenv('HISHATAK_KEY_ALIAS')
+       keyPassword System.getenv('HISHATAK_KEY_PASSWORD')
+     }
+   }
+ }
+ buildTypes {
+   release {
+     signingConfig signingConfigs.release
+     minifyEnabled false
+   }
+ }
 }
 dependencies { implementation 'androidx.core:core:1.15.0' }
