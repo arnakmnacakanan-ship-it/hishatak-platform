@@ -9,7 +9,11 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.webkit.GeolocationPermissions;
 import android.webkit.PermissionRequest;
-import android.webkit.ValueCallback;\nimport android.webkit.JavascriptInterface;\nimport android.widget.Toast;\nimport java.io.FileOutputStream;\nimport java.nio.charset.StandardCharsets;
+import android.webkit.ValueCallback;
+import android.webkit.JavascriptInterface;
+import android.widget.Toast;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -31,7 +35,8 @@ public class MainActivity extends Activity {
   web=new WebView(this); setContentView(web);
   WebSettings s=web.getSettings();
   s.setJavaScriptEnabled(true); s.setDomStorageEnabled(true); s.setDatabaseEnabled(true);
-  s.setGeolocationEnabled(true); s.setMediaPlaybackRequiresUserGesture(false);\n  web.addJavascriptInterface(new Object(){ @JavascriptInterface public void saveFile(String name,String text,String type){ runOnUiThread(()->{ try{ File dir=getExternalFilesDir(android.os.Environment.DIRECTORY_DOCUMENTS); if(dir==null) dir=getFilesDir(); if(!dir.exists()) dir.mkdirs(); File out=new File(dir,name); try(FileOutputStream fos=new FileOutputStream(out)){ fos.write(text.getBytes(StandardCharsets.UTF_8)); } Toast.makeText(MainActivity.this,"Сохранено: "+out.getAbsolutePath(),Toast.LENGTH_LONG).show(); }catch(Exception e){ Toast.makeText(MainActivity.this,"Ошибка экспорта: "+e.getMessage(),Toast.LENGTH_LONG).show(); }}); } },"Android");
+  s.setGeolocationEnabled(true); s.setMediaPlaybackRequiresUserGesture(false);
+  web.addJavascriptInterface(new Object(){ @JavascriptInterface public void saveFile(String name,String text,String type){ runOnUiThread(()->{ try{ File dir=getExternalFilesDir(android.os.Environment.DIRECTORY_DOCUMENTS); if(dir==null) dir=getFilesDir(); if(!dir.exists()) dir.mkdirs(); File out=new File(dir,name); try(FileOutputStream fos=new FileOutputStream(out)){ fos.write(text.getBytes(StandardCharsets.UTF_8)); } Toast.makeText(MainActivity.this,"Сохранено: "+out.getAbsolutePath(),Toast.LENGTH_LONG).show(); }catch(Exception e){ Toast.makeText(MainActivity.this,"Ошибка экспорта: "+e.getMessage(),Toast.LENGTH_LONG).show(); }}); } },"Android");
   web.setWebViewClient(new WebViewClient(){ @Override public boolean shouldOverrideUrlLoading(WebView v,String url){ return false; } });
   web.setWebChromeClient(new WebChromeClient(){
    @Override public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback cb){
