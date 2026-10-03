@@ -1,4 +1,4 @@
-name: Build Hishatak APK
+name: Build Shirim APK
 on:
   push:
     branches: [ main ]
@@ -32,7 +32,7 @@ jobs:
             echo "$HISHATAK_KEYSTORE_B64" | base64 -d > hishatak-release.jks
             gradle assembleRelease --stacktrace
             $ANDROID_HOME/build-tools/35.0.0/apksigner verify --print-certs app/build/outputs/apk/release/app-release.apk
-            cp app/build/outputs/apk/release/app-release.apk Hishatak-update.apk
+            cp app/build/outputs/apk/release/app-release.apk Shirim-0.2.5-update.apk
           else
             echo "Release signing secrets are not configured; building debug APK. In-place updates are not guaranteed until signing secrets are configured."
             gradle assembleDebug --stacktrace
@@ -41,5 +41,5 @@ jobs:
           fi
       - uses: actions/upload-artifact@v4
         with:
-          name: Hishatak-update-apk
+          name: Shirim-0.2.5-update-apk
           path: Hishatak-update.apk
